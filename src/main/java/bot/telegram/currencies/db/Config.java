@@ -6,8 +6,6 @@ class Config {
     private String[] currencies;
     private String notificationTime;
 
-    // Гетери і сетери
-
     public int getDecimalPlaces() {
         return decimalPlaces;
     }
