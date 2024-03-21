@@ -17,6 +17,7 @@ import static bot.telegram.currencies.io.MessageUtil.*;
 public class TelegramBot extends TelegramLongPollingBot {
 
 
+    UserUtil randomUser = new UserUtil("2", "ПриватБанк", List.of("EUR"), "10:00");
     @Override
     public void onUpdateReceived(Update update) {
         SendMessage message = new SendMessage();
@@ -25,55 +26,74 @@ public class TelegramBot extends TelegramLongPollingBot {
         // Пропоную зробити клас 'User' де будуть зберігатися його налаштування
 
         if (update.hasMessage() && update.getMessage().getText().equalsIgnoreCase("/start")) {
-            message.setChatId(chatId);
             message.setText(GREETINGS);
-            createGreetingsMarkup(message);
+            createGreetingsMarkup(message, chatId);
         }
 
         if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(GET_INFORMATION)) {
-            message.setChatId(chatId);
             //TODO: Потрібно щоб замість 'ACTUAL_INFORMATION' виводило курс за налаштуванням
             message.setText(ACTUAL_INFORMATION);
-            createGreetingsMarkup(message);
+            createGreetingsMarkup(message, chatId);
         }
 
         if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS)) {
-            message.setChatId(chatId);
             message.setText(SETTINGS);
-            createSettingsMarkup(message);
+            createSettingsMarkup(message, chatId);
         }
 
-        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_1)) {
-            String userInput = update.getCallbackQuery().getData();
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_DECIMAL_PLACE_TITLE)) {
+            createDecimalPlaceSettingsMarkup(message, chatId, randomUser);
+        }
+
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_BANK_TITLE)) {
+            createBankSettingsMarkup(message, chatId, randomUser);
+        }
+
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_CURRENCIES_TITLE)) {
+            createCurrenciesSettingsMarkup(message, chatId, randomUser);
+        }
+
+        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_NOTIFICATION_TIME_TITLE)) {
+            createNotificationTimeSettingsMarkup(message, chatId);
+        }
+
+        Map<String, String> userInput = getUserInput(update);
+        System.out.println("userInput = " + userInput);
+        String key = "";
+        String value = "";
+        for (Map.Entry<String, String> entry : userInput.entrySet()) {
+            key = entry.getKey();
+            value = entry.getValue();
+        }
+        if (key.equals("SETTINGS_1")) {
             // TODO: Використати 'userInput' щоб налаштувати кількість знаків після коми - 'exchange package'
-            message.setChatId(chatId);
-            message.setText("Виберіть " + Character.toLowerCase(SETTINGS_1.charAt(0)) + SETTINGS_1.substring(1) + ":");
-            createSettingOneMarkup(message);
+            randomUser.setDecimalPlaces(value);
+            createDecimalPlaceSettingsMarkup(message, chatId, randomUser);
         }
-
-        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_2)) {
-            String userInput = update.getCallbackQuery().getData();
+        if (key.equals("SETTINGS_2")) {
             // TODO: Використати 'userInput' щоб обрати банк - 'exchange package'
-            message.setChatId(chatId);
-            message.setText("Виберіть " + Character.toLowerCase(SETTINGS_2.charAt(0)) + SETTINGS_2.substring(1) + ":");
-            createSettingTwoMarkup(message);
+            randomUser.setBank(value);
+            createBankSettingsMarkup(message, chatId, randomUser);
+        }
+        if (key.equals("SETTINGS_3")) {
+            // TODO: Використати 'value' щоб обрати валюту - 'exchange package'
+            List<String> userCurrencies = new ArrayList<>();
+            for (String currency : randomUser.getCurrencies()) {
+                userCurrencies.add(currency);
+            }
+            if (userCurrencies.contains(value)) {
+                userCurrencies.remove(value);
+            } else {
+                userCurrencies.add(value);
+            }
+            randomUser.setCurrencies(userCurrencies);
+            createCurrenciesSettingsMarkup(message, chatId, randomUser);
+        }
+        if (key.equals("SETTINGS_4")) {
+            // TODO: Використати 'value' щоб налаштувати - 'scheduler package'
+            System.out.println("value = " + value);
         }
 
-        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_3)) {
-            String userInput = update.getCallbackQuery().getData();
-            // TODO: Використати 'userInput' щоб обрати валюту - 'exchange package'
-            message.setChatId(chatId);
-            message.setText("Виберіть " + Character.toLowerCase(SETTINGS_3.charAt(0)) + SETTINGS_3.substring(1) + ":");
-            createSettingThreeMarkup(message);
-        }
-
-        if (update.hasCallbackQuery() && update.getCallbackQuery().getData().equals(SETTINGS_4)) {
-            String userInput = update.getCallbackQuery().getData();
-            // TODO: Використати 'userInput' щоб налаштувати - 'scheduler package'
-            message.setChatId(chatId);
-            message.setText("Виберіть " + Character.toLowerCase(SETTINGS_4.charAt(0)) + SETTINGS_4.substring(1) + ":");
-            createSettingFourMarkup(message);
-        }
 
         try {
             execute(message);
@@ -103,48 +123,62 @@ public class TelegramBot extends TelegramLongPollingBot {
         return null;
     }
 
-    private void createGreetingsMarkup(SendMessage message) {
+    private void createGreetingsMarkup(SendMessage message, Long chatId) {
+        message.setChatId(chatId);
         Map<String, String> buttons = new HashMap<>();
         buttons.put(GET_INFORMATION, GET_INFORMATION);
         buttons.put(SETTINGS, SETTINGS);
         attachKeyboard(message, buttons);
     }
 
-    private void createSettingsMarkup(SendMessage message) {
+    private void createSettingsMarkup(SendMessage message, Long chatId) {
+        message.setChatId(chatId);
         Map<String, String> buttons = new HashMap<>();
-        buttons.put(SETTINGS_1, SETTINGS_1);
-        buttons.put(SETTINGS_2, SETTINGS_2);
-        buttons.put(SETTINGS_3, SETTINGS_3);
-        buttons.put(SETTINGS_4, SETTINGS_4);
+        buttons.put(SETTINGS_DECIMAL_PLACE_TITLE, SETTINGS_DECIMAL_PLACE_TITLE);
+        buttons.put(SETTINGS_BANK_TITLE, SETTINGS_BANK_TITLE);
+        buttons.put(SETTINGS_CURRENCIES_TITLE, SETTINGS_CURRENCIES_TITLE);
+        buttons.put(SETTINGS_NOTIFICATION_TIME_TITLE, SETTINGS_NOTIFICATION_TIME_TITLE);
         attachKeyboard(message, buttons);
     }
 
 
 
-    private void createSettingOneMarkup(SendMessage message) {
+    private void createDecimalPlaceSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
+        message.setChatId(chatId);
+        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_DECIMAL_PLACE_TITLE.charAt(0)) + SETTINGS_DECIMAL_PLACE_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
-        buttons.put(SETTINGS_1_1, SETTINGS_1_1);
-        buttons.put(SETTINGS_1_2, SETTINGS_1_2);
-        buttons.put(SETTINGS_1_3, SETTINGS_1_3);
+        List<String> decimalPlaceSettings = setDecimalPlaceSettings(user);
+        for (int i = 0; i < decimalPlaceSettings.size(); i++) {
+            buttons.put(decimalPlaceSettings.get(i), "SETTINGS_1_" + (i + 1));
+        }
         attachKeyboard(message, buttons);
     }
 
-    private void createSettingTwoMarkup(SendMessage message) {
+    private void createBankSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
+        message.setChatId(chatId);
+        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_BANK_TITLE.charAt(0)) + SETTINGS_BANK_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
-        buttons.put(SETTINGS_2_1, SETTINGS_2_1);
-        buttons.put(SETTINGS_2_2, SETTINGS_2_2);
-        buttons.put(SETTINGS_2_3, SETTINGS_2_3);
+        List<String> bankSettings = setBankSettings(user);
+        for (int i = 0; i < bankSettings.size(); i++) {
+            buttons.put(bankSettings.get(i), "SETTINGS_2_" + (i + 1));
+        }
         attachKeyboard(message, buttons);
     }
 
-    private void createSettingThreeMarkup(SendMessage message) {
+    private void createCurrenciesSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
+        message.setChatId(chatId);
+        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_CURRENCIES_TITLE.charAt(0)) + SETTINGS_CURRENCIES_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
-        buttons.put(SETTINGS_3_1, SETTINGS_3_1);
-        buttons.put(SETTINGS_3_2, SETTINGS_3_2);
+        List<String> currenciesSettings = setCurrenciesSettings(user);
+        for (int i = 0; i < currenciesSettings.size(); i++) {
+            buttons.put(currenciesSettings.get(i), "SETTINGS_3_" + (i + 1));
+        }
         attachKeyboard(message, buttons);
     }
 
-    private void createSettingFourMarkup(SendMessage message) {
+    private void createNotificationTimeSettingsMarkup(SendMessage message, Long chatId) {
+        message.setChatId(chatId);
+        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_NOTIFICATION_TIME_TITLE.charAt(0)) + SETTINGS_NOTIFICATION_TIME_TITLE.substring(1) + ":");
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
         row1.add(SETTINGS_4_ARRAY.get(0));
@@ -182,5 +216,48 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         keyboardMarkup.setKeyboard(keyboardButtons);
         message.setReplyMarkup(keyboardMarkup);
+    }
+
+    private Map<String, String> getUserInput(Update update) {
+        Map<String, String> userInput = new HashMap<>();
+        if (update.hasCallbackQuery()) {
+            if (update.getCallbackQuery().getData().startsWith("SETTINGS")) {
+                String dataFromUser = update.getCallbackQuery().getData();
+                userInput = assignSettings(dataFromUser);
+            }
+        }
+        if (update.hasMessage() && !update.getMessage().getText().equalsIgnoreCase("/start")) {
+            String dataFromUser = update.getMessage().getText();
+            userInput = assignSettings(dataFromUser);
+            if (!SETTINGS_4_ARRAY.contains(userInput.get("SETTINGS_4"))) {
+                userInput = new HashMap<>();
+            }
+        }
+        return userInput;
+    }
+
+    private Map<String, String> assignSettings(String dataFromUser) {
+        Map<String, String> result = new HashMap<>();
+        switch (dataFromUser) {
+            case "SETTINGS_1_1" : result.put("SETTINGS_1", "2");
+                break;
+            case "SETTINGS_1_2" : result.put("SETTINGS_1", "3");
+                break;
+            case "SETTINGS_1_3" : result.put("SETTINGS_1", "4");
+                break;
+            case "SETTINGS_2_1" : result.put("SETTINGS_2", "НБУ");
+                break;
+            case "SETTINGS_2_2" : result.put("SETTINGS_2", "ПриватБанк");
+                break;
+            case "SETTINGS_2_3" : result.put("SETTINGS_2", "Монобанк");
+                break;
+            case "SETTINGS_3_1" : result.put("SETTINGS_3", "USD");
+                break;
+            case "SETTINGS_3_2" : result.put("SETTINGS_3", "EUR");
+                break;
+            // "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "Вимкнути повідомлення"
+            default: result.put("SETTINGS_4", dataFromUser);
+        }
+        return result;
     }
 }
