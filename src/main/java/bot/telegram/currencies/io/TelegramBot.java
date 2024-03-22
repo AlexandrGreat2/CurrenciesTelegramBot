@@ -2,6 +2,7 @@ package bot.telegram.currencies.io;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -9,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static bot.telegram.currencies.io.Constants.*;
@@ -68,25 +70,25 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (key.equals("SETTINGS_1")) {
             // TODO: Використати 'userInput' щоб налаштувати кількість знаків після коми - 'exchange package'
             randomUser.setDecimalPlaces(value);
+            deleteMessage(update, chatId);
             createDecimalPlaceSettingsMarkup(message, chatId, randomUser);
         }
         if (key.equals("SETTINGS_2")) {
             // TODO: Використати 'userInput' щоб обрати банк - 'exchange package'
             randomUser.setBank(value);
+            deleteMessage(update, chatId);
             createBankSettingsMarkup(message, chatId, randomUser);
         }
         if (key.equals("SETTINGS_3")) {
             // TODO: Використати 'value' щоб обрати валюту - 'exchange package'
-            List<String> userCurrencies = new ArrayList<>();
-            for (String currency : randomUser.getCurrencies()) {
-                userCurrencies.add(currency);
-            }
+            List<String> userCurrencies = new ArrayList<>(randomUser.getCurrencies());
             if (userCurrencies.contains(value)) {
                 userCurrencies.remove(value);
             } else {
                 userCurrencies.add(value);
             }
             randomUser.setCurrencies(userCurrencies);
+            deleteMessage(update, chatId);
             createCurrenciesSettingsMarkup(message, chatId, randomUser);
         }
         if (key.equals("SETTINGS_4")) {
@@ -145,7 +147,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void createDecimalPlaceSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
         message.setChatId(chatId);
-        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_DECIMAL_PLACE_TITLE.charAt(0)) + SETTINGS_DECIMAL_PLACE_TITLE.substring(1) + ":");
+        message.setText(new String("Виберіть ".getBytes(), StandardCharsets.UTF_8) + Character.toLowerCase(SETTINGS_DECIMAL_PLACE_TITLE.charAt(0)) + SETTINGS_DECIMAL_PLACE_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
         List<String> decimalPlaceSettings = setDecimalPlaceSettings(user);
         for (int i = 0; i < decimalPlaceSettings.size(); i++) {
@@ -156,7 +158,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void createBankSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
         message.setChatId(chatId);
-        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_BANK_TITLE.charAt(0)) + SETTINGS_BANK_TITLE.substring(1) + ":");
+        message.setText(new String("Виберіть ".getBytes(), StandardCharsets.UTF_8) + Character.toLowerCase(SETTINGS_BANK_TITLE.charAt(0)) + SETTINGS_BANK_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
         List<String> bankSettings = setBankSettings(user);
         for (int i = 0; i < bankSettings.size(); i++) {
@@ -167,7 +169,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void createCurrenciesSettingsMarkup(SendMessage message, Long chatId, UserUtil user) {
         message.setChatId(chatId);
-        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_CURRENCIES_TITLE.charAt(0)) + SETTINGS_CURRENCIES_TITLE.substring(1) + ":");
+        message.setText(new String("Виберіть ".getBytes(), StandardCharsets.UTF_8) + Character.toLowerCase(SETTINGS_CURRENCIES_TITLE.charAt(0)) + SETTINGS_CURRENCIES_TITLE.substring(1) + ":");
         Map<String, String> buttons = new HashMap<>();
         List<String> currenciesSettings = setCurrenciesSettings(user);
         for (int i = 0; i < currenciesSettings.size(); i++) {
@@ -178,7 +180,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void createNotificationTimeSettingsMarkup(SendMessage message, Long chatId) {
         message.setChatId(chatId);
-        message.setText("Виберіть " + Character.toLowerCase(SETTINGS_NOTIFICATION_TIME_TITLE.charAt(0)) + SETTINGS_NOTIFICATION_TIME_TITLE.substring(1) + ":");
+        message.setText(new String("Виберіть ".getBytes(), StandardCharsets.UTF_8) + Character.toLowerCase(SETTINGS_NOTIFICATION_TIME_TITLE.charAt(0)) + SETTINGS_NOTIFICATION_TIME_TITLE.substring(1) + ":");
         List<KeyboardRow> rows = new ArrayList<>();
         KeyboardRow row1 = new KeyboardRow();
         row1.add(SETTINGS_4_ARRAY.get(0));
@@ -259,5 +261,15 @@ public class TelegramBot extends TelegramLongPollingBot {
             default: result.put("SETTINGS_4", dataFromUser);
         }
         return result;
+    }
+
+    private void deleteMessage(Update update, Long chatId) {
+        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+        DeleteMessage deleteMessage = new DeleteMessage(chatId.toString(), messageId);
+        try {
+            execute(deleteMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
