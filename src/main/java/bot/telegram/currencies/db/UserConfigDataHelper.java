@@ -48,7 +48,7 @@ public class UserConfigDataHelper {
             return gson.fromJson(reader, Config.class);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return DefaultConfigGenerator.generateDefaultConfig();
         }
     }
 
@@ -60,7 +60,7 @@ public class UserConfigDataHelper {
         }
     }
 
-    private static void saveUserConfig(TelegramUser user) {
+    public static void saveUserConfig(TelegramUser user) {
         String userFileName = USERS_FOLDER + user.getUserId() + "_config.json";
         writeConfigToFile(userFileName, user.getConfig());
     }

@@ -1,6 +1,6 @@
 package bot.telegram.currencies.db;
 
-class Config {
+public class Config {
     private int decimalPlaces;
     private String bank;
     private String[] currencies;
