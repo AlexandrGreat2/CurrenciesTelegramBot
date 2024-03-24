@@ -1,7 +1,10 @@
 package bot.telegram.currencies;
 
+import bot.telegram.currencies.scheduler.HourlyUpdate;
+
 public class AppLauncher {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        //update currencies
+        HourlyUpdate.getCurrencyRateEveryHour();
     }
 }
