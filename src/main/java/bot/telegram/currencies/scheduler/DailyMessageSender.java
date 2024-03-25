@@ -18,7 +18,11 @@ public class DailyMessageSender {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final TelegramBot telegramBot = new TelegramBot();
 
+    private static final Timer timer = new Timer();
+
     public static void processAllUserConfig() {
+        timer.cancel(); //stop all timers
+
         File folder = new File(USERS_FOLDER);
         File[] listOfFiles = folder.listFiles();
 
@@ -55,8 +59,6 @@ public class DailyMessageSender {
             sendTime.set(Calendar.HOUR_OF_DAY, notificationHour);
             sendTime.set(Calendar.MINUTE, notificationMinute);
             sendTime.set(Calendar.SECOND, 0);
-
-            Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
