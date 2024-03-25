@@ -7,7 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class HourlyUpdate {
-    public static void getCurrencyRateEveryHour() {
+    public static void getAndSendEveryHour() {
         Timer timer = new Timer();
         BankExchangeRates currencyRates = CurrencyRateDataHelper.loadCurrencyRates();
         timer.scheduleAtFixedRate(new TimerTask() {
