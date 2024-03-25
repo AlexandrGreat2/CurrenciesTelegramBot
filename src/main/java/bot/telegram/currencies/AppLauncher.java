@@ -11,8 +11,8 @@ import java.util.Date;
 
 public class AppLauncher {
     public static void main(String[] args) {
-        //update currencies
-        HourlyUpdate.getCurrencyRateEveryHour();
+        //update currencies and regenerate user config
+        HourlyUpdate.getAndSendEveryHour();
 
         //bot running
         try {
