@@ -14,6 +14,9 @@ public class HourlyUpdate {
             @Override
             public void run() {
                 CurrencyRateDataHelper.updateCurrencyRates(currencyRates);
+                System.out.println("currencies was updated");
+                DailyMessageSender.processAllUserConfig();
+                System.out.println("scheduler reactivated");
             }
         }, 0, 60*60*1000);
     }

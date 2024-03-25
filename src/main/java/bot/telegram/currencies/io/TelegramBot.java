@@ -5,9 +5,7 @@ import bot.telegram.currencies.db.CurrencyRateDataHelper;
 import bot.telegram.currencies.db.TelegramUser;
 import bot.telegram.currencies.db.UserConfigDataHelper;
 import bot.telegram.currencies.message.MessageTemplate;
-import bot.telegram.currencies.message.MessageTemplateENG;
 import bot.telegram.currencies.message.MessageTemplateUKR;
-import bot.telegram.currencies.scheduler.SendInTime;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -18,21 +16,27 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static bot.telegram.currencies.io.Constants.*;
 
 
 public class TelegramBot extends TelegramLongPollingBot {
 
-
+    BotConfig botConfig = BotConfig.loadBotConfig();
     MessageTemplate messageTemplate = new MessageTemplateUKR();
     ConcurrentHashMap<Long, TelegramUser> currentUsers = new ConcurrentHashMap<>();
     TelegramUser currentUser;
+
+    public void sendActualInformation(Long chatId){
+        SendMessage message = new SendMessage();
+        BankExchangeRates bankExchangeRates = CurrencyRateDataHelper.loadCurrencyRates();
+        message.setText(messageTemplate.getActualInformation(currentUsers.get(chatId), bankExchangeRates));
+        createGreetingsMarkup(message, chatId);
+        System.out.println("send to chat "+chatId);
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -92,12 +96,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return BOT_NAME;
+        return botConfig.getBotName();
     }
 
     @Override
     public String getBotToken() {
-        return BOT_TOKEN;
+        return botConfig.getBotToken();
     }
 
     private Long getChatId(Update update) {
