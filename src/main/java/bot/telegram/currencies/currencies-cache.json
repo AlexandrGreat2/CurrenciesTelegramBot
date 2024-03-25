@@ -1,0 +1,20 @@
+{
+  "NBU": {
+    "USDRateBuy": 39.229801177978516,
+    "USDRateSell": 39.229801177978516,
+    "EURRateBuy": 42.48979949951172,
+    "EURRateSell": 42.48979949951172
+  },
+  "PrivatBank": {
+    "USDRateBuy": 38.849998474121094,
+    "USDRateSell": 39.45000076293945,
+    "EURRateBuy": 42.0,
+    "EURRateSell": 43.0
+  },
+  "MonoBank": {
+    "USDRateBuy": 38.91999816894531,
+    "USDRateSell": 39.37009811401367,
+    "EURRateBuy": 42.099998474121094,
+    "EURRateSell": 42.850399017333984
+  }
+}
