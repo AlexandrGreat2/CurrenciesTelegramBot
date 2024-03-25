@@ -4,14 +4,16 @@ import com.google.gson.Gson;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class DefaultConfigGenerator {
 
-    protected static Config generateDefaultConfig() {
+    public static Config generateDefaultConfig() {
         Config defaultConfig = new Config();
         defaultConfig.setDecimalPlaces(2);
-        defaultConfig.setBank("ПриватБанк");
-        defaultConfig.setCurrencies(new String[]{"USD"});
+        defaultConfig.setBank(new String("ПриватБанк".getBytes(), StandardCharsets.UTF_8));
+        defaultConfig.setCurrencies(List.of("USD"));
         defaultConfig.setNotificationTime("09:00");
         return defaultConfig;
     }

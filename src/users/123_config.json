@@ -1,8 +1,9 @@
 {
   "decimalPlaces": 2,
-  "bank": "ПриватБанк",
+  "bank": "PrivatBank",
   "currencies": [
-    "USD"
+    "USD",
+    "EUR"
   ],
   "notificationTime": "09:00"
 }
