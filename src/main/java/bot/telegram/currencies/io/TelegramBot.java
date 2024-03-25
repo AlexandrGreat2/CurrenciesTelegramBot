@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -79,60 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
 
-//        SendInTime.sendMessageInTime(10, new TimerTask() {
-//            @Override
-//            public void run() {
-//                BankExchangeRates bankExchangeRates = CurrencyRateDataHelper.loadCurrencyRates();
-//                message.setText(messageTemplate.getActualInformation(currentUsers.get(chatId), bankExchangeRates));
-//                createGreetingsMarkup(message, chatId);
-//            }
-//        });
-
-//        Date currentDate = new Date();
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String currentDateTime = dateFormat.format(currentDate);
-//        System.out.println("currentDateTime = " + currentDateTime);
-
-        Map<String, String> userInput = getUserInput(update);
-
-        System.out.println("userInput = " + userInput);
-        String key = "";
-        String value = "";
-
-        for (Map.Entry<String, String> entry : userInput.entrySet()) {
-            key = entry.getKey();
-            value = entry.getValue();
-        }
-        if (key.equals("SETTINGS_1")) {
-            currentUsers.get(chatId).setDecimalPlaces(value);
-            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
-            deleteMessage(update, chatId);
-            createDecimalPlaceSettingsMarkup(message, chatId, currentUsers.get(chatId));
-        }
-        if (key.equals("SETTINGS_2")) {
-            currentUsers.get(chatId).setBank(value);
-            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
-            deleteMessage(update, chatId);
-            createBankSettingsMarkup(message, chatId, currentUsers.get(chatId));
-        }
-        if (key.equals("SETTINGS_3")) {
-            List<String> userCurrencies = new ArrayList<>();
-            for (String currency : currentUsers.get(chatId).getCurrencies()) {
-                userCurrencies.add(currency);
-            }
-            if (userCurrencies.contains(value)) {
-                userCurrencies.remove(value);
-            } else {
-                userCurrencies.add(value);
-            }
-            currentUsers.get(chatId).setCurrencies(userCurrencies);
-            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
-            deleteMessage(update, chatId);
-            createCurrenciesSettingsMarkup(message, chatId, currentUsers.get(chatId));
-        }
-        if (key.equals("SETTINGS_4")) {
-            currentUsers.get(chatId).setNotificationTime(value);
-        }
+        manageUserInput(update, message, chatId);
 
 
         try {
@@ -141,8 +89,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
-
-
 
     @Override
     public String getBotUsername() {
@@ -314,6 +260,46 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(deleteMessage);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void manageUserInput(Update update, SendMessage message, Long chatId) {
+        Map<String, String> userInput = getUserInput(update);
+        String key = "";
+        String value = "";
+        for (Map.Entry<String, String> entry : userInput.entrySet()) {
+            key = entry.getKey();
+            value = entry.getValue();
+        }
+        if (key.equals("SETTINGS_1")) {
+            currentUsers.get(chatId).setDecimalPlaces(value);
+            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
+            deleteMessage(update, chatId);
+            createDecimalPlaceSettingsMarkup(message, chatId, currentUsers.get(chatId));
+        }
+        if (key.equals("SETTINGS_2")) {
+            currentUsers.get(chatId).setBank(value);
+            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
+            deleteMessage(update, chatId);
+            createBankSettingsMarkup(message, chatId, currentUsers.get(chatId));
+        }
+        if (key.equals("SETTINGS_3")) {
+            List<String> userCurrencies = new ArrayList<>();
+            for (String currency : currentUsers.get(chatId).getCurrencies()) {
+                userCurrencies.add(currency);
+            }
+            if (userCurrencies.contains(value)) {
+                userCurrencies.remove(value);
+            } else {
+                userCurrencies.add(value);
+            }
+            currentUsers.get(chatId).setCurrencies(userCurrencies);
+            UserConfigDataHelper.saveUserConfig(currentUsers.get(chatId));
+            deleteMessage(update, chatId);
+            createCurrenciesSettingsMarkup(message, chatId, currentUsers.get(chatId));
+        }
+        if (key.equals("SETTINGS_4")) {
+            currentUsers.get(chatId).setNotificationTime(value);
         }
     }
 }
