@@ -10,38 +10,37 @@ import java.io.Reader;
 
 public class UserConfigDataHelper {
 
-//    private static final String ROOT_DIR = "src/main/java/bot/telegram/currencies/";
+
     private static final String GENERAL_CONFIG_FILE = "src/main/java/bot/telegram/currencies/config.json";
     private static final String USERS_FOLDER = "src/users/";
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-//    private static final Map<Long, TelegramUser> users = new HashMap<>();
 
-    public static void main(String[] args) {
-        // Завантаження загальної конфігурації
-        Config generalConfig = readConfigFromFile(GENERAL_CONFIG_FILE);
-
-        // Приклад створення та збереження конфігурації для користувача з ID 123
-        Config userConfig = new Config();
-        userConfig.setDecimalPlaces(2);
-        userConfig.setBank("ПриватБанк");
-        userConfig.setCurrencies(new String[]{"USD"});
-        userConfig.setNotificationTime("09:00");
-        // Або можна зрбобити так
-        Config userConfig2 = DefaultConfigGenerator.generateDefaultConfig();
-
-        // 123 це тестовий id користувача
-        TelegramUser user = new TelegramUser(123, userConfig);
-        saveUserConfig(user);
-
-        // Ось так ми читаємо конфіг з файлу
-        Config userConfig3 = loadUserConfig(123).getConfig();
-
-        // Приклад зчитування конфігурації для користувача з ID 123
-        TelegramUser loadedUser = loadUserConfig(123);
-        System.out.println("User 123 Config: " + loadedUser.getConfig());
-    }
+// //show class logic
+//    public static void main(String[] args) {
+//        Config generalConfig = readConfigFromFile(GENERAL_CONFIG_FILE);
+//        // Example of creating and saving configuration for the user with ID 123
+//        Config userConfig = new Config();
+//        userConfig.setDecimalPlaces(2);
+//        userConfig.setBank("ПриватБанк");
+//        userConfig.setCurrencies(List.of("USD"));
+//        userConfig.setNotificationTime("09:00");
+//
+//        // Or another way
+//        Config userConfig2 = DefaultConfigGenerator.generateDefaultConfig();
+//
+//        // 123 is testing ID of user
+//        TelegramUser user = new TelegramUser(123, userConfig);
+//        saveUserConfig(user);
+//
+//        // The way how we read user config
+//        Config userConfig3 = loadUserConfig(123).getConfig();
+//
+//        // Example of reading configuration of user 123
+//        TelegramUser loadedUser = loadUserConfig(123);
+//        System.out.println("User 123 Config: " + loadedUser.getConfig());
+//    }
 
     private static Config readConfigFromFile(String fileName) {
         try (Reader reader = new FileReader(fileName)) {
@@ -65,7 +64,7 @@ public class UserConfigDataHelper {
         writeConfigToFile(userFileName, user.getConfig());
     }
 
-    private static TelegramUser loadUserConfig(long userId) {
+    public static TelegramUser loadUserConfig(long userId) {
         String userFileName = USERS_FOLDER + userId + "_config.json";
         Config config = readConfigFromFile(userFileName);
         return new TelegramUser(userId, config);

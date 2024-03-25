@@ -15,15 +15,14 @@ public class ConfigDataHelper {
     private static final String GENERAL_CONFIG_FILE = ROOT_DIR + "config.json";
     //private static final String USER_CONFIG_FILE = ROOT_DIR + "user-data.json";
 
-    public static void main(String[] args) {
-
-        Config defaultConfig = DefaultConfigGenerator.generateDefaultConfig();
-        writeConfigToFile(GENERAL_CONFIG_FILE, defaultConfig);
-
-
-        Config generalConfig = readConfigFromFile(GENERAL_CONFIG_FILE);
-        //Config userConfig = readConfigFromFile(USER_CONFIG_FILE);
-    }
+//    public static void main(String[] args) {
+////        //test to be sure that all is right
+//        Config defaultConfig = DefaultConfigGenerator.generateDefaultConfig();
+//        writeConfigToFile(GENERAL_CONFIG_FILE, defaultConfig);
+//
+//        Config generalConfig = readConfigFromFile(GENERAL_CONFIG_FILE);
+//        //Config userConfig = readConfigFromFile(USER_CONFIG_FILE);
+//    }
 
     private static Config readConfigFromFile(String fileName) {
         Gson gson = new Gson();

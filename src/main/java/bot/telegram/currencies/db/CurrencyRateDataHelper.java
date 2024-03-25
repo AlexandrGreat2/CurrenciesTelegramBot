@@ -17,16 +17,16 @@ public class CurrencyRateDataHelper {
     private static final String FILENAME = ROOT_DIR + "currencies-cache.json";
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static void main(String[] args) {
-        //test to be sure that all is right
-        BankExchangeRates currencyRates = loadCurrencyRates();
-
-        updateCurrencyRates(currencyRates);
-
-        saveCurrencyRates(currencyRates);
-
-        printCurrencyRates(currencyRates);
-    }
+//    public static void main(String[] args) {
+//        //test to be sure that all is right
+//        BankExchangeRates currencyRates = loadCurrencyRates();
+//
+//        updateCurrencyRates(currencyRates);
+//
+//        saveCurrencyRates(currencyRates);
+//
+//        printCurrencyRates(currencyRates);
+//    }
 
     public static BankExchangeRates loadCurrencyRates() {
         try (FileReader reader = new FileReader(FILENAME)) {
