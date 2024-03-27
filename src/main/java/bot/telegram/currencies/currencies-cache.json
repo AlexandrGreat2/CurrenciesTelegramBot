@@ -1,20 +1,20 @@
 {
   "NBU": {
-    "USDRateBuy": 39.229801177978516,
-    "USDRateSell": 39.229801177978516,
-    "EURRateBuy": 42.48979949951172,
-    "EURRateSell": 42.48979949951172
+    "USDRateBuy": 39.34299850463867,
+    "USDRateSell": 39.34299850463867,
+    "EURRateBuy": 42.69110107421875,
+    "EURRateSell": 42.69110107421875
   },
   "PrivatBank": {
     "USDRateBuy": 38.849998474121094,
     "USDRateSell": 39.45000076293945,
-    "EURRateBuy": 42.0,
-    "EURRateSell": 43.0
+    "EURRateBuy": 42.099998474121094,
+    "EURRateSell": 43.099998474121094
   },
   "MonoBank": {
-    "USDRateBuy": 38.91999816894531,
-    "USDRateSell": 39.37009811401367,
-    "EURRateBuy": 42.099998474121094,
-    "EURRateSell": 42.850399017333984
+    "USDRateBuy": 39.04999923706055,
+    "USDRateSell": 39.35919952392578,
+    "EURRateBuy": 42.2400016784668,
+    "EURRateSell": 42.83940124511719
   }
 }

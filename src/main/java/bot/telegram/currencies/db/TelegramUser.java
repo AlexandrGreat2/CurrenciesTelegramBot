@@ -1,5 +1,9 @@
 package bot.telegram.currencies.db;
 
+import bot.telegram.currencies.message.MessageTemplate;
+import bot.telegram.currencies.message.MessageTemplateUKR;
+
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class TelegramUser {
@@ -57,6 +61,14 @@ public class TelegramUser {
 
     public void setNotificationTime(String notificationTime) {
         config.setNotificationTime(notificationTime);
+    }
+
+    public String getLanguage() {
+        return config.getLanguage();
+    }
+
+    public void setLanguage(String language) {
+        config.setLanguage(language);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class BotConfig {
 
     public static void main(String[] args) {
 //generate bot here. Just enter bot Name and BotToken
-        BotConfig botConfig = new BotConfig("", "");
+        BotConfig botConfig = new BotConfig("DenisProjectBot", "7126409067:AAFAX1wz5VPHr0GcXBL2__5PvCmH4qJW3eU");
         saveBotConfig(botConfig);
 
         BotConfig loadedBotConfig = loadBotConfig();

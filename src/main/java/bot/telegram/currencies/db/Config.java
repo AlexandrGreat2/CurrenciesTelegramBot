@@ -1,5 +1,9 @@
 package bot.telegram.currencies.db;
 
+import bot.telegram.currencies.message.MessageTemplate;
+import bot.telegram.currencies.message.MessageTemplateUKR;
+
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Config {
@@ -7,6 +11,7 @@ public class Config {
     private String bank;
     private List<String> currencies;
     private String notificationTime;
+    private String language;
 
     public int getDecimalPlaces() {
         return decimalPlaces;
@@ -40,6 +45,14 @@ public class Config {
         this.notificationTime = notificationTime;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     @Override
     public String toString() {
         return "Config{" +
@@ -47,6 +60,7 @@ public class Config {
                 ", bank='" + bank + '\'' +
                 ", currencies=" + currencies +
                 ", notificationTime='" + notificationTime + '\'' +
+                ", language='" + language + '\'' +
                 '}';
     }
 }
