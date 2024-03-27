@@ -1,8 +1,6 @@
 package bot.telegram.currencies.io;
 
 import bot.telegram.currencies.constants.Constants;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.*;
 
@@ -45,7 +43,7 @@ public class BotConfig {
 
     public static void main(String[] args) {
 //generate bot here. Just enter bot Name and BotToken
-        BotConfig botConfig = new BotConfig("DenisProjectBot", "7126409067:AAFAX1wz5VPHr0GcXBL2__5PvCmH4qJW3eU");
+        BotConfig botConfig = new BotConfig("", "");
         saveBotConfig(botConfig);
 
         BotConfig loadedBotConfig = loadBotConfig();
