@@ -1,5 +1,6 @@
 package bot.telegram.currencies;
 
+import bot.telegram.currencies.io.BotConfig;
 import bot.telegram.currencies.io.TelegramBot;
 import bot.telegram.currencies.scheduler.HourlyUpdate;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -14,6 +15,9 @@ public class AppLauncher {
         //update currencies and regenerate user config
         HourlyUpdate.getAndSendEveryHour();
 
+        //put your bot name and token
+        BotConfig.saveBotConfig(new BotConfig("DenisProjectBot", "7126409067:AAFAX1wz5VPHr0GcXBL2__5PvCmH4qJW3eU"));
+
         //bot running
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
@@ -21,10 +25,5 @@ public class AppLauncher {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
-        Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentDateTime = dateFormat.format(currentDate);
-        System.out.println("currentDateTime = " + currentDateTime);
     }
 }

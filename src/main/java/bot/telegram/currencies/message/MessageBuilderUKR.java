@@ -4,36 +4,17 @@ import bot.telegram.currencies.db.BankExchangeRates;
 import bot.telegram.currencies.db.TelegramUser;
 import bot.telegram.currencies.exchange.ExchangeRateDTO;
 
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static bot.telegram.currencies.constants.MessageTemplateUKR.*;
 
-public class MessageTemplateUKR implements MessageTemplate {
 
-    public final String GREETINGS = new String("Привіт! Цей бот допоможе тобі відслідковувати актуальні курси валют!\nОберіть одну з наступних дій:".getBytes(), StandardCharsets.UTF_8);
-    public final String GET_INFORMATION = new String("Отримати інфо".getBytes(), StandardCharsets.UTF_8);
-    public final String SETTINGS = new String("Налаштування".getBytes(), StandardCharsets.UTF_8);
-    public final String SETTINGS_DECIMAL_PLACE_TITLE = new String("Кількість знаків після коми".getBytes(), StandardCharsets.UTF_8);
-    public final String SETTINGS_BANK_TITLE = new String("Банк".getBytes(), StandardCharsets.UTF_8);
-    public final String SETTINGS_CURRENCIES_TITLE = new String("Валюти".getBytes(), StandardCharsets.UTF_8);
-    public final String SETTINGS_NOTIFICATION_TIME_TITLE = new String("Час оповіщень".getBytes(), StandardCharsets.UTF_8);
-    public final String CHOOSE = new String("Виберіть ".getBytes(), StandardCharsets.UTF_8);
-    public final List<String> DECIMAL_PLACE_SETTINGS = List.of("2", "3", "4");
-    public final List<String> BANK_SETTINGS = List.of(
-            new String("НБУ".getBytes(), StandardCharsets.UTF_8),
-            new String("ПриватБанк".getBytes(), StandardCharsets.UTF_8),
-            new String("Монобанк".getBytes(), StandardCharsets.UTF_8)
-    );
-    public final List<String> CURRENCIES_SETTINGS = List.of("USD", "EUR");
-    public final List<String> NOTIFICATION_TIME_SETTINGS = List.of(
-            "9:00", "10:00", "11:00",
-            "12:00", "13:00", "14:00",
-            "15:00", "16:00", "17:00",
-            "18:00", new String("Вимкнути повідомлення".getBytes(), StandardCharsets.UTF_8)
-    );
+public class MessageBuilderUKR implements MessageBuilder {
 
     @Override
     public String getGreetings() {
@@ -96,6 +77,29 @@ public class MessageTemplateUKR implements MessageTemplate {
     }
 
     @Override
+    public String getLanguageTitle() {
+        return SETTINGS_LANGUAGE_TITLE;
+    }
+
+    @Override
+    public List<String> getLanguageSettings() {
+        return LANGUAGE_SETTINGS;
+    }
+    @Override
+    public List<String> setLanguageSettings(TelegramUser user) {
+        List<String> result = new ArrayList<>();
+        String userLanguage = user.getLanguage();
+        for (String language : LANGUAGE_SETTINGS) {
+            if (language.equals(userLanguage)) {
+                result.add(new String("✅ ".getBytes(), StandardCharsets.UTF_8) + language);
+            } else {
+                result.add(language);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public String getActualInformation(TelegramUser user, BankExchangeRates bankExchangeRates) {
         String userBank = user.getBank();
         String decimalPlaces = user.getDecimalPlaces();
@@ -103,7 +107,7 @@ public class MessageTemplateUKR implements MessageTemplate {
         ExchangeRateDTO bankDTO = getBankDTO(bankExchangeRates, userBank);
 
         StringBuilder result = new StringBuilder();
-        result.append(new String("Курс в ".getBytes(), StandardCharsets.UTF_8) + userBank + "\n");
+        result.append(new String("Курс в ".getBytes(), StandardCharsets.UTF_8) + translateBank(userBank) + "\n");
         if (userCurrencies.contains("USD")) {
             result.append(new String("USD покупка: ".getBytes(), StandardCharsets.UTF_8)
                     + formatExchangeRate(bankDTO.getUSDRateBuy(), decimalPlaces) + "\n");
@@ -138,11 +142,25 @@ public class MessageTemplateUKR implements MessageTemplate {
         List<String> result = new ArrayList<>();
         String userBank = user.getBank();
         for (String bank : BANK_SETTINGS) {
+            String bankUKR = translateBank(bank);
             if (bank.equals(userBank)) {
-                result.add(new String("✅ ".getBytes(), StandardCharsets.UTF_8) + bank);
+                result.add(new String("✅ ".getBytes(), StandardCharsets.UTF_8) + bankUKR);
             } else {
-                result.add(bank);
+                result.add(bankUKR);
             }
+        }
+        return result;
+    }
+
+    private String translateBank(String bank) {
+        String result = "";
+        switch (bank) {
+            case "bank1" : result = new String("НБУ".getBytes(), StandardCharsets.UTF_8);
+                break;
+            case "bank2" : result = new String("МоноБанк ".getBytes(), StandardCharsets.UTF_8);
+                break;
+            case "bank3" : result = new String("ПриватБанк".getBytes(), StandardCharsets.UTF_8);
+                break;
         }
         return result;
     }
@@ -166,7 +184,8 @@ public class MessageTemplateUKR implements MessageTemplate {
                 SETTINGS_BANK_TITLE + ": " + user.getBank() + "\n" +
                 SETTINGS_CURRENCIES_TITLE + ": " + user.getCurrencies() + "\n" +
                 SETTINGS_DECIMAL_PLACE_TITLE + ": " + user.getDecimalPlaces() + "\n" +
-                SETTINGS_NOTIFICATION_TIME_TITLE + ": " + user.getNotificationTime() + "\n";
+                SETTINGS_NOTIFICATION_TIME_TITLE + ": " + user.getNotificationTime() + "\n" +
+                SETTINGS_LANGUAGE_TITLE + ": " + user.getLanguage() + "\n";
     }
 
     private ExchangeRateDTO getBankDTO(BankExchangeRates bankExchangeRates, String userBank) {

@@ -59,6 +59,14 @@ public class TelegramUser {
         config.setNotificationTime(notificationTime);
     }
 
+    public String getLanguage() {
+        return config.getLanguage();
+    }
+
+    public void setLanguage(String language) {
+        config.setLanguage(language);
+    }
+
     @Override
     public String toString() {
         return "TelegramUser{" +

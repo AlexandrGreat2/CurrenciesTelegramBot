@@ -5,7 +5,7 @@ import bot.telegram.currencies.db.TelegramUser;
 
 import java.util.List;
 
-public interface MessageTemplate {
+public interface MessageBuilder {
     public String getGreetings();
 
     public String getInformation();
@@ -29,6 +29,9 @@ public interface MessageTemplate {
 
     public List<String> getNotificationTimeSettings();
     public String getActualInformation(TelegramUser user, BankExchangeRates bankExchangeRates);
+    public String getLanguageTitle();
+    public List<String> getLanguageSettings();
+    public List<String> setLanguageSettings(TelegramUser user);
     public List<String> setDecimalPlaceSettings(TelegramUser user);
 
     public List<String> setBankSettings(TelegramUser user);

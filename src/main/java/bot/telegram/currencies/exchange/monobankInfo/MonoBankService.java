@@ -1,8 +1,8 @@
 package bot.telegram.currencies.exchange.monobankInfo;
 
+import bot.telegram.currencies.constants.Constants;
 import bot.telegram.currencies.exchange.BankService;
 import bot.telegram.currencies.exchange.ExchangeRateDTO;
-import com.google.gson.Gson;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public class MonoBankService extends BankService {
     public ExchangeRateDTO getExchangeRate() {
         HttpResponse<String> response = request(BASE_URL);
         ExchangeRateDTO rateDTO = new ExchangeRateDTO();
-        List<MonoBankData> list = List.of(new Gson().fromJson(response.body(), MonoBankData[].class));
+        List<MonoBankData> list = List.of(Constants.GSON.fromJson(response.body(), MonoBankData[].class));
         for (MonoBankData element: list) {
             if((element.getCurrencyFrom() == currency.get("USD")) && (element.getCurrencyTo() == currency.get("UAH"))){
                 rateDTO.setUSDRateSell(element.getRateSell());

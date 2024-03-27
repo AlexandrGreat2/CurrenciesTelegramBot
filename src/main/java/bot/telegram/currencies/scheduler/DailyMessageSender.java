@@ -1,5 +1,6 @@
 package bot.telegram.currencies.scheduler;
 
+import bot.telegram.currencies.constants.Constants;
 import bot.telegram.currencies.db.Config;
 import bot.telegram.currencies.io.TelegramBot;
 import com.google.gson.Gson;
@@ -15,7 +16,6 @@ import java.util.TimerTask;
 public class DailyMessageSender {
 
     private static final String USERS_FOLDER = "src/users/";
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final TelegramBot telegramBot = new TelegramBot();
 
     private static final Timer timer = new Timer();
@@ -38,7 +38,7 @@ public class DailyMessageSender {
     private static void processUserConfig(File configFile) {
         try (FileReader reader = new FileReader(configFile)) {
             String userId = getUserIdFromFileName(configFile.getName());
-            Config userConfig = gson.fromJson(reader, Config.class);
+            Config userConfig = Constants.GSON.fromJson(reader, Config.class);
             var arrayOfStrings = userConfig.getNotificationTime().split(":");
 
             int notificationHour = -1;
