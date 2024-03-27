@@ -1,6 +1,7 @@
 package bot.telegram.currencies.db;
 
 
+import bot.telegram.currencies.constants.Constants;
 import com.google.gson.Gson;
 
 import java.io.FileWriter;
@@ -25,9 +26,8 @@ public class ConfigDataHelper {
 //    }
 
     private static Config readConfigFromFile(String fileName) {
-        Gson gson = new Gson();
         try (Reader reader = Files.newBufferedReader(Paths.get(fileName))) {
-            return gson.fromJson(reader, Config.class);
+            return Constants.GSON.fromJson(reader, Config.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -35,9 +35,8 @@ public class ConfigDataHelper {
     }
 
     private static void writeConfigToFile(String fileName, Config config) {
-        Gson gson = new Gson();
         try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(config, writer);
+            Constants.GSON.toJson(config, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }

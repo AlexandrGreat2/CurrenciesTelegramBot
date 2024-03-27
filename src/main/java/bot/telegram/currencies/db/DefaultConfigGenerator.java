@@ -1,6 +1,6 @@
 package bot.telegram.currencies.db;
 
-import bot.telegram.currencies.message.MessageTemplateUKR;
+import bot.telegram.currencies.constants.Constants;
 import com.google.gson.Gson;
 
 import java.io.FileWriter;
@@ -21,9 +21,8 @@ public class DefaultConfigGenerator {
     }
 
     private static void writeConfigToFile(String fileName, Config config) {
-        Gson gson = new Gson();
         try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(config, writer);
+            Constants.GSON.toJson(config, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }

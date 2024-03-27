@@ -5,7 +5,7 @@ import bot.telegram.currencies.db.TelegramUser;
 
 import java.util.List;
 
-public interface MessageTemplate {
+public interface MessageBuilder {
     public String getGreetings();
 
     public String getInformation();

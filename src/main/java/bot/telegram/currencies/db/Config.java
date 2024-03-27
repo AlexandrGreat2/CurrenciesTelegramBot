@@ -1,9 +1,5 @@
 package bot.telegram.currencies.db;
 
-import bot.telegram.currencies.message.MessageTemplate;
-import bot.telegram.currencies.message.MessageTemplateUKR;
-
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Config {

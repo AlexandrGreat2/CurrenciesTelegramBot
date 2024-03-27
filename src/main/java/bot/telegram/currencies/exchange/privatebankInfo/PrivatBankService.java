@@ -1,5 +1,6 @@
 package bot.telegram.currencies.exchange.privatebankInfo;
 
+import bot.telegram.currencies.constants.Constants;
 import bot.telegram.currencies.exchange.BankService;
 import bot.telegram.currencies.exchange.ExchangeRateDTO;
 import com.google.gson.Gson;
@@ -12,7 +13,7 @@ public class PrivatBankService extends BankService {
     public ExchangeRateDTO getExchangeRate() {
         HttpResponse<String> response = request(BASE_URL);
         ExchangeRateDTO rateDTO = new ExchangeRateDTO();
-        List<PrivatBankData> list = List.of(new Gson().fromJson(response.body(), PrivatBankData[].class));
+        List<PrivatBankData> list = List.of(Constants.GSON.fromJson(response.body(), PrivatBankData[].class));
         for (PrivatBankData element: list) {
             if(element.getCurrencyFrom().equals("USD") && element.getCurrencyTo().equals("UAH")){
                 rateDTO.setUSDRateSell(element.getRateSell());

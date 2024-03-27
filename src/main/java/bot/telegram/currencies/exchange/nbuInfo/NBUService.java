@@ -1,5 +1,6 @@
 package bot.telegram.currencies.exchange.nbuInfo;
 
+import bot.telegram.currencies.constants.Constants;
 import bot.telegram.currencies.exchange.BankService;
 import bot.telegram.currencies.exchange.ExchangeRateDTO;
 import com.google.gson.Gson;
@@ -21,7 +22,7 @@ public class NBUService extends BankService {
     public ExchangeRateDTO getExchangeRate() {
         HttpResponse<String> response = request(BASE_URL);
         ExchangeRateDTO rateDTO = new ExchangeRateDTO();
-        List<NBUData> list = List.of(new Gson().fromJson(response.body(), NBUData[].class));
+        List<NBUData> list = List.of(Constants.GSON.fromJson(response.body(), NBUData[].class));
         for (NBUData element: list) {
             if(element.getCurrency() == currency.get("USD")){
                 rateDTO.setUSDRateSell(element.getRate());

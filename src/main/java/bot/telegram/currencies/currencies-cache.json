@@ -6,10 +6,10 @@
     "EURRateSell": 42.69110107421875
   },
   "PrivatBank": {
-    "USDRateBuy": 38.849998474121094,
-    "USDRateSell": 39.45000076293945,
-    "EURRateBuy": 42.099998474121094,
-    "EURRateSell": 43.099998474121094
+    "USDRateBuy": 38.79999923706055,
+    "USDRateSell": 39.400001525878906,
+    "EURRateBuy": 42.0,
+    "EURRateSell": 43.0
   },
   "MonoBank": {
     "USDRateBuy": 39.04999923706055,
